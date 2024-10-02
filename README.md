@@ -10,7 +10,7 @@ This repository is a repo for holding my [02239 - Data Security](https://kurser.
 `pw(A,B)` - The password of `A` at server `B`
 `pk(A)` - The public key of `A`
 `inv(K)` - The private key that belongs to `K`
-`exp(A)` - ?????
+`exp(g,X)` - Computes `g^X` via the modulo process making it too hard to undo without `X`.
 `{M}K` - A message `M` encrypted by `K`
 `{|M|}K` - Symmetrically encrypt message `M` with key `K`
 `{M}inv(K)` - Signed message `M` with the private key of `K`
