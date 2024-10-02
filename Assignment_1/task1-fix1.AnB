@@ -7,19 +7,40 @@ Types: Agent A,B,s;
 
 
 # A and s already have a shared (secret) key.
+# s and B have their own symmetric keys.
 
 Knowledge: A: A,B,s,pk(s),pk(B),sk(A,s);
 	   s: A,s,pk(s),inv(pk(s)),sk(A,s);
 	   B: A,B,s,pk(s),pk(B),inv(pk(B))
    where A!=B, A!=s, B!=s
 
+
+# In plain terms, Task1's process is:
+# 1. A sends B a new symmetric key (KAB), with a nonce as a certificate.
+# 2. B lets A know it received the message by sending NA back to A with KAB.
+# 3. Since s is honest, A uses s to transmit NA again to B.
+#    a. Problem! B can't read the next message from s though ?!?!
+# 4. B uses KAB from before to send the payload to A. This gives A info to verify B, since it's encrypted by KAB that only B should know.
+
+# This theoretically accomplishes the 3 goals, but my conclusion is that currently s is useless, so it's probably easier to attack.
+
 Actions:
-# 
+# From A, send NA and KAB to B (only B can read)
 A->B: {A,B,NA,KAB}pk(B)
+# From B, send NA back to A (using KAB; only A *SHOULD* read)
 B->A: {|A,B,NA|}KAB
+# From A, send NA to s (using shared key; only s and A can read)
 A->s: {|A,NA|}sk(A,s)
+# From s, send NA back to B (using s's private key, so only s can read???)
 s->B: {A,NA,s}inv(pk(s))
+# From B, send NA with Payload off to A (using KAB; only A and B **SHOULD** read)
 B->A: {|A,B,NA,Payload|}KAB
+
+
+# In plain terms, our goal is:
+# 1. Have B know who A is for sure based on AN...
+# 2. Have A know who B is from the Payload...
+# 3. Payload remain only readable by A and B.
 
 Goals:
 B authenticates A on NA

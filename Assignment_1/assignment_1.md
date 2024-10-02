@@ -7,7 +7,7 @@ This `.md` file holds my thought processes and resources during the solving of A
 Running a file against the ofmc.
 
 ```sh
-ofmc task1.AnB
+ofmc task1.AnB --attacktrace
 ```
 
 Running my updated `.AnB` files against my fixes
