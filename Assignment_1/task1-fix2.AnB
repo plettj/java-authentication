@@ -28,10 +28,11 @@ Actions:
 A->B: {A,B,NA,KAB}pk(B)
 # From B, send NA back to A (using KAB; only A *SHOULD* read)
 B->A: {|A,B,NA|}KAB
-# From A, send NA [PLUS KAB -> Secret Leaked error, i can produce Payload] to s (using shared key; only s and A can read)
-A->s: {|A,NA,KAB|}sk(A,s)
+# From A, send NA to s (using shared key; only s and A can read)
+# [Adding B to the A->s message] - FAILS on 2 sessions, Secret Leaked error, i can create Payload.
+A->s: {|A,B,NA|}sk(A,s) # ONLY A SHOULD BE ABLE TO MAKE THIS MESSAGE.
 # From s, send NA back to B using s's key.
-s->B: {A,NA,KAB,s}inv(pk(s))
+s->B: {A,B,NA,s}inv(pk(s))
 # From B, send NA with Payload off to A (using KAB; only A and B **SHOULD** read)
 B->A: {|A,B,NA,Payload|}KAB
 

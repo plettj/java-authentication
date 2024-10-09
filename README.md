@@ -6,7 +6,7 @@ This repository is a repo for holding my [02239 - Data Security](https://kurser.
 
 `A` - Variable (starts uppercase)
 `s` - Constant (starts lowercase)
-`sk(A,B)` - Shared key of A and B
+`sk(A,B)` - Shared secret key of `A` and `B`
 `pw(A,B)` - The password of `A` at server `B`
 `pk(A)` - The public key of `A`
 `inv(K)` - The private key that belongs to `K`
