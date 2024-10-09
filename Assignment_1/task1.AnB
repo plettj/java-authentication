@@ -21,3 +21,5 @@ Goals:
 B authenticates A on NA
 A authenticates B on Payload
 Payload secret between A,B
+#[update for part 4 of the question]
+sk(A,s) guessable secret between A,s
