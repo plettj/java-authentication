@@ -13,6 +13,14 @@ Knowledge: A: A,B,hm,ck(A,hm),sk(A,hm),g;
 # A sends to B a symmetric encrypted message that it has with hm.
 # B then sends the message to hm along with his g^Y which is encrypte symmetric with hm
 
+# SOLUTION:
+# We initially were sending plain text data, which allowed the possibility for an intruder
+#      to alter the information sent between A and B. However, by removing the plain text
+#      and instead just communicating through encryped text, we resolve this issue. Basically,
+#      we will be using hm as the middle man to faciliate communication and only send encrypted
+#      messages to hm who will then decrypt it and send a new encryption of the text to the receiver
+#      with their corresponding key.
+
 Actions:
 A->B:  {|A,B,exp(g,X)|}ck(A,hm)
 B->hm: {|A,B,exp(g,Y),
