@@ -1,0 +1,38 @@
+Protocol: task2
+
+# hm is server handling both shared secret keys
+# ck and sk are two functions that produce different shared secret keys
+Types: Agent A,B,hm;
+       Number X,Y,g,M;
+       Function ck,sk
+
+Knowledge: A: A,B,hm,ck(A,hm),sk(A,hm),g;
+	   B: A,B,hm,ck(B,hm),sk(B,hm),g;
+	   hm: A,B,hm,ck(A,hm),sk(A,hm),ck(B,hm),sk(B,hm),g
+
+# A sends to B a symmetric encrypted message that it has with hm.
+# B then sends the message to hm along with his g^Y which is encrypte symmetric with hm
+
+Actions:
+A->B:  {|A,B,exp(g,X)|}ck(A,hm)
+B->hm: {|A,B,exp(g,Y),
+         {|A,B,exp(g,X)|}ck(A,hm)|}ck(B,hm)
+hm->B: {|B,A,exp(g,X),{|B,A,exp(g,X),exp(g,Y)|}sk(A,hm)|}sk(B,hm)
+B->A: {|B,A,exp(g,X),exp(g,Y)|}sk(A,hm)
+A->B: {|M|}exp(exp(g,X),Y)
+
+# B authenticates A on M -> B will verify identity of A by checking that they know M
+# M secret between A,B -> only A and B know the true value of M
+Goals:
+B authenticates A on M
+M secret between A,B
+
+
+
+
+#A->B:  A,B,exp(g,X),{|A,B,exp(g,X)|}ck(A,hm)
+#B->hm: {|A,B,exp(g,X),exp(g,Y),
+#         {|A,B,exp(g,X)|}ck(A,hm)|}ck(B,hm)
+#hm->B: {|B,A,{|B,A,exp(g,X),exp(g,Y)|}sk(A,hm)|}sk(B,hm)
+#B->A: exp(g,Y),{|B,A,exp(g,X),exp(g,Y)|}sk(A,hm)
+#A->B: {|M|}exp(exp(g,X),Y)
