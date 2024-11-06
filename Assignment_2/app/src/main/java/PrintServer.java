@@ -45,7 +45,7 @@ public class PrintServer extends UnicastRemoteObject implements PrintServerInter
     String textLine;
 
     String LOG_PRINTER_QUEUE = "Assignment_2/logs/log_printer_queue.txt";
-    File log_printer_queue_file = new File(LOG_PRINTER_QUEUE);
+    File logPrinterQueueFile = new File(LOG_PRINTER_QUEUE);
 
     /**
      * Prints the specified file on the designated printer.
@@ -93,16 +93,16 @@ public class PrintServer extends UnicastRemoteObject implements PrintServerInter
      */
     public String queue(String printer) throws RemoteException {
         try {
-            out = new FileWriter(log_printer_queue_file, true);
+            out = new FileWriter(logPrinterQueueFile, true);
             writeFile = new BufferedWriter(out);
 
-            Queue printer_queue = printerQueues.get(printer);
-            if (printer_queue == null) {
+            Queue printerQueue = printerQueues.get(printer);
+            if (printerQueue == null) {
                 System.out.println("Printer does not exist");
             } else {
-                Iterator<PrintJob> it = printer_queue.iterator();
+                Iterator<PrintJob> it = printerQueue.iterator();
                 while (it.hasNext()) {
-                    PrintJob name = it.next();
+                    PrintJob print = it.next();
                     System.out.println(name);
                 }
             }
