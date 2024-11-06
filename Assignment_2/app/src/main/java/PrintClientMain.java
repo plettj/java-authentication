@@ -3,7 +3,7 @@ package Assignment_2.app.src.main.java;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-public class PrintClient {
+public class PrintClientMain {
     public static void main(String[] args) {
         try {
             // Connect to the registry running on localhost and port 1099
@@ -14,9 +14,8 @@ public class PrintClient {
 
             // Call remote methods on the server
             printServer.start();
-            printServer.print("Assignment_2/app/src/test/resources/test_1.txt",
-                    "Assignment_2/app/src/test/resources/printers/printer_1");
-            System.out.println(printServer.queue("printer_1"));
+            printServer.print("test_file.txt", "Printer1");
+            System.out.println(printServer.queue("Printer1"));
             printServer.stop();
         } catch (Exception e) {
             e.printStackTrace();
