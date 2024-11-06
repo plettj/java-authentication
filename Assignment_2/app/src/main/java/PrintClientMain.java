@@ -14,8 +14,9 @@ public class PrintClientMain {
 
             // Call remote methods on the server
             printServer.start();
-            printServer.print("test_file.txt", "Printer1");
-            System.out.println(printServer.queue("Printer1"));
+            printServer.print("Assignment_2/app/src/test/resources/test_1.txt",
+                    "Assignment_2/app/src/test/resources/printers/printer_1");
+            System.out.println(printServer.queue("printer_1"));
             printServer.stop();
         } catch (Exception e) {
             e.printStackTrace();
