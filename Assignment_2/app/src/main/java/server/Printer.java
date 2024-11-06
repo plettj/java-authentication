@@ -11,8 +11,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-// Simple canvas example: https://github.com/plettj/javaSnake/blob/master/src/main/java/dev/plett/javasnake/SnakeView.java
-
 
 /**
  * Printer class simulates a server that manages print jobs.
@@ -24,7 +22,6 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
     FileWriter out;
     BufferedWriter writeFile;
     String serverInvocationFileName = "src/logs/server_invocation_records.txt";
-    
 
     public Printer() throws RemoteException {
         super(); // Call the parent constructor
@@ -36,27 +33,27 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
         int i = 0;
         while (i < parameters.length) {
             invocation = invocation.concat(parameters[i]);
-            if (i < parameters.length - 1){
+            if (i < parameters.length - 1) {
                 invocation = invocation.concat(", ");
             }
             i = i + 1;
-        }   
+        }
         invocation = invocation.concat(")");
         try {
             File parentDir = file.getParentFile();
             if (parentDir != null && !parentDir.exists()) {
-                parentDir.mkdirs(); 
+                parentDir.mkdirs();
             }
-            
+
             if (!file.exists()) {
                 file.createNewFile();
-            } 
+            }
             out = new FileWriter(file, true);
             writeFile = new BufferedWriter(out);
-            
+
             writeFile.write(invocation);
             writeFile.newLine();
-            
+
             writeFile.close();
             out.close();
         } catch (IOException e) {
@@ -64,6 +61,7 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
             System.err.println("IOException: " + e.getMessage());
         }
     }
+
     /**
      * Prints the specified file on the designated printer.
      *
@@ -71,7 +69,7 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
      * @param printer  The name of the printer to print to.
      */
     public void print(String filename, String printer) throws RemoteException {
-        recordServerInvocation("print", new String[]{filename, printer});
+        recordServerInvocation("print", new String[] { filename, printer });
     }
 
     /**
@@ -81,7 +79,7 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
      * @return A list of print jobs in the format of "job number - file name".
      */
     public void queue(String printer) throws RemoteException {
-        recordServerInvocation("queue", new String[]{printer});
+        recordServerInvocation("queue", new String[] { printer });
     }
 
     /**
@@ -91,21 +89,21 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
      * @param job     The job number to move to the top of the queue.
      */
     public void topQueue(String printer, int job) throws RemoteException {
-        recordServerInvocation("topQueue", new String[]{printer, String.valueOf(job)});
+        recordServerInvocation("topQueue", new String[] { printer, String.valueOf(job) });
     }
 
     /**
      * Starts the print server.
      */
     public void start() throws RemoteException {
-        recordServerInvocation("start", new String[]{});
+        recordServerInvocation("start", new String[] {});
     }
 
     /**
      * Stops the print server.
      */
     public void stop() throws RemoteException {
-        recordServerInvocation("stop", new String[]{});
+        recordServerInvocation("stop", new String[] {});
     }
 
     /**
@@ -113,7 +111,7 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
      * again.
      */
     public void restart() throws RemoteException {
-        recordServerInvocation("restart", new String[]{});
+        recordServerInvocation("restart", new String[] {});
     }
 
     /**
@@ -123,7 +121,7 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
      * @return The status of the printer.
      */
     public void status(String printer) throws RemoteException {
-        recordServerInvocation("status", new String[]{printer});
+        recordServerInvocation("status", new String[] { printer });
     }
 
     /**
@@ -133,7 +131,7 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
      * @return The value of the specified parameter.
      */
     public void readConfig(String parameter) throws RemoteException {
-        recordServerInvocation("readConfig", new String[]{parameter});
+        recordServerInvocation("readConfig", new String[] { parameter });
     }
 
     /**
@@ -144,7 +142,7 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
      * @param value     The value to set for the configuration parameter.
      */
     public void setConfig(String parameter, String value) throws RemoteException {
-        recordServerInvocation("setConfig", new String[]{parameter, value});
+        recordServerInvocation("setConfig", new String[] { parameter, value });
     }
 
     /**
