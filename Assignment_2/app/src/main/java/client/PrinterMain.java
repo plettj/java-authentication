@@ -1,6 +1,24 @@
 package client;
 
+import java.util.Scanner;
+
 public class PrinterMain {
+
+    public Login inputToLogin() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter your username: ");
+        String username = scanner.nextLine();
+        System.out.println("Enter your password: ");
+        String password = scanner.nextLine();
+        System.out.println("Enter your symmetric key: ");
+        String symmetricKey = scanner.nextLine();
+        scanner.close();
+
+        // TODO: hash password with SHA3256
+        Login login = new Login(username, password, symmetricKey);
+        return login;
+    }
+
     public static void main(String[] args) {
         try {
             // Create an instance of a printer client.

@@ -1,6 +1,9 @@
 package server;
 
 import authentication.VerificationResult;
+import client.Login;
+import server.Users.User;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -39,5 +42,16 @@ public class Authentication {
         for (Map.Entry<String, String> entry : sessionStore.entrySet()) {
             System.out.println(entry.getKey() + " : " + entry.getValue());
         }
+    }
+
+    public String authenticateLogin(Login login) {
+        String username = login.getUsername();
+        String password = login.getPassword();
+        String sessionId = null;
+        if (this.users.authenticateUser(username, password) != null) {
+            sessionId = UUID.randomUUID().toString();
+            sessionStore.put(username, sessionId);
+        }
+        return sessionId;
     }
 }
