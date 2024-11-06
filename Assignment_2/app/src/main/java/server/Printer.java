@@ -20,6 +20,7 @@ import java.rmi.server.UnicastRemoteObject;
 public class Printer extends UnicastRemoteObject implements PrinterInterface {
 
     private Authentication authentication;
+    
     FileWriter out;
     BufferedWriter writeFile;
     String serverInvocationFileName = "src/logs/server_invocation_records.txt";
@@ -27,6 +28,7 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
     public Printer() throws RemoteException {
         super();
         this.authentication = new Authentication();
+        this.authentication.print();
     }
 
     private void recordServerInvocation(String function, String[] parameters) throws RemoteException {
@@ -162,5 +164,11 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
         }
 
         System.out.println("This code is running...");
+    }
+
+    public enum Role {
+        ADMIN, // All printer actions
+        MANAGER, // Only some printer actions
+        USER // Very few printer actions
     }
 }
