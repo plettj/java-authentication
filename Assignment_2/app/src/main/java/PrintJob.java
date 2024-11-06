@@ -1,4 +1,4 @@
-package Assignment_2.src.app.src.main.java;
+package Assignment_2.app.src.main.java;
 
 /**
  * PrintJob represents an individual job in the print queue with a unique ID and

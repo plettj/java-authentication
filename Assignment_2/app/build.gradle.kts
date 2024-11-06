@@ -27,5 +27,5 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = "Assignment_2.src.app.src.main.java.PrintServerMain"
+    mainClass = "Assignment_2.app.src.main.java.PrintServerMain"
 }

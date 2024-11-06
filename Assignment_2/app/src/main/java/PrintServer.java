@@ -3,7 +3,7 @@
  * javac Assignment_2/src/*.java && java Assignment_2.src.PrintServer
  */
 
-package Assignment_2.src.app.src.main.java;
+package Assignment_2.app.src.main.java;
 
 import java.io.File;
 import java.io.FileWriter;
