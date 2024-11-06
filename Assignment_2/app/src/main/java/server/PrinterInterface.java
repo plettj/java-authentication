@@ -1,14 +1,14 @@
-package Assignment_2.app.src.main.java;
+package server;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface PrintServerInterface extends Remote {
+public interface PrinterInterface extends Remote {
     void print(String filename, String printer) throws RemoteException;
 
-    String queue(String printer) throws RemoteException;
+    void queue(String printer) throws RemoteException;
 
-    String status(String printer) throws RemoteException;
+    void status(String printer) throws RemoteException;
 
     void start() throws RemoteException;
 
@@ -20,5 +20,5 @@ public interface PrintServerInterface extends Remote {
 
     void setConfig(String parameter, String value) throws RemoteException;
 
-    String readConfig(String parameter) throws RemoteException;
+    void readConfig(String parameter) throws RemoteException;
 }
