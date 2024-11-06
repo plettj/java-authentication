@@ -19,12 +19,14 @@ import java.rmi.server.UnicastRemoteObject;
  */
 public class Printer extends UnicastRemoteObject implements PrinterInterface {
 
+    private Authentication authentication;
     FileWriter out;
     BufferedWriter writeFile;
     String serverInvocationFileName = "src/logs/server_invocation_records.txt";
 
     public Printer() throws RemoteException {
-        super(); // Call the parent constructor
+        super();
+        this.authentication = new Authentication();
     }
 
     private void recordServerInvocation(String function, String[] parameters) throws RemoteException {

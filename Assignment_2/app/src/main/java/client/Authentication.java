@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 
 public class Authentication {
     private String sessionId;
-    private final String passwordFile = "client_password.txt";
+    private final String passwordFile = "src/passwords/client_password.txt";
 
     public void storePassword(String password) {
         try {

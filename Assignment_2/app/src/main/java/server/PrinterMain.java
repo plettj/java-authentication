@@ -12,8 +12,9 @@ public class PrinterMain {
             // Create an instance of the PrintServer
             PrinterInterface printer = new Printer();
 
-            // Bind the PrintServer instance to the registry with the name "PrintServer"
-            registry.rebind("PrintServer", printer);
+            // Bind the server Printer instance to the registry with the name
+            // "ServerPrinter"
+            registry.rebind("ServerPrinter", printer);
 
             System.out.println("Print server is running...");
         } catch (Exception e) {
