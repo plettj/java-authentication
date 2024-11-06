@@ -1,3 +1,0 @@
-This is the first test file.
-HEELLO WORLDIEND?
-end of FILE :))
