@@ -23,7 +23,7 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
 
     FileWriter out;
     BufferedWriter writeFile;
-    String serverInvocationFileName = "logs/server_invocation_records.txt";
+    String serverInvocationFileName = "src/logs/server_invocation_records.txt";
     
 
     public Printer() throws RemoteException {
@@ -43,9 +43,14 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
         }   
         invocation = invocation.concat(")");
         try {
+            File parentDir = file.getParentFile();
+            if (parentDir != null && !parentDir.exists()) {
+                parentDir.mkdirs(); 
+            }
+            
             if (!file.exists()) {
                 file.createNewFile();
-            }
+            } 
             out = new FileWriter(file, true);
             writeFile = new BufferedWriter(out);
             
@@ -93,7 +98,6 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
      * Starts the print server.
      */
     public void start() throws RemoteException {
-        System.out.println("HELLO HERE");
         recordServerInvocation("start", new String[]{});
     }
 
@@ -149,10 +153,6 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
      * @param args
      */
     public static void main(String[] args) {
-        String currentDir = System.getProperty("user.dir");
-        
-        // Print the current working directory
-        System.out.println("Current working directory: " + currentDir);
         try {
             Printer server = new Printer();
             // TODO: Make constants for relative `tests` and `printers` locations.
