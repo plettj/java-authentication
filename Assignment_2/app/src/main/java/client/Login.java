@@ -22,5 +22,9 @@ public class Login {
     public String getSymmetricKey() {
         return this.symmetricKey;
     }
+
+    public void print() {
+        System.out.println(this.username + ", " + this.password + ", " + this.symmetricKey);
+    }
 }
  
