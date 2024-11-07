@@ -2,8 +2,8 @@ package server;
 
 import java.util.ArrayList;
 
+import authentication.Hashing;
 import server.Printer.Role;
-import java.security.MessageDigest;
 
 public class Users {
     private ArrayList<User> users = new ArrayList<User>();
@@ -60,22 +60,10 @@ public class Users {
         
         User(String username, String password, Role role) {
             
-            try {
-                MessageDigest messageDigest = MessageDigest.getInstance("SHA3-256");
-                messageDigest.update(password.getBytes());
-                byte[] digest = messageDigest.digest();
-                StringBuffer sb = new StringBuffer();
-                for (byte b : digest) {
-                    sb.append(String.format("%02x", b & 0xff));
-                }
-                password = sb.toString();
-            } catch (Exception e) {
-                System.out.println("Error: Algorithm not found.");
-                e.printStackTrace();
-            }
-
+            // Hash the password with SHA3-256
+            Hashing hash = new Hashing(password);
             this.username = username;
-            this.password = password;
+            this.password = hash.getHash();
             this.role = role;
         }
     }

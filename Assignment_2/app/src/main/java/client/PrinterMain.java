@@ -2,6 +2,8 @@ package client;
 
 import java.util.Scanner;
 
+import authentication.Hashing;
+
 public class PrinterMain {
 
     public Login inputToLogin() {
@@ -14,7 +16,8 @@ public class PrinterMain {
         String symmetricKey = scanner.nextLine();
         scanner.close();
 
-        // TODO: hash password with SHA3256
+        Hashing hash = new Hashing(password);
+        password = hash.getHash();
         Login login = new Login(username, password, symmetricKey);
         return login;
     }
