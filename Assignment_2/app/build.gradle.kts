@@ -34,4 +34,5 @@ tasks.register<JavaExec>("runClient") {
     description = "Run the RMI Client"
     classpath = sourceSets["main"].runtimeClasspath
     mainClass.set("client.PrinterMain")
+    standardInput = System.`in`
 }
