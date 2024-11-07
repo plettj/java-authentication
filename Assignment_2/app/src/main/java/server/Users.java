@@ -1,12 +1,12 @@
 package server;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 import authentication.Hashing;
 import server.Printer.Role;
 
 public class Users {
-    private ArrayList<User> users = new ArrayList<User>();
+    private HashMap<String, User> userMap = new HashMap<String, User>();
 
     public Users() {
         User[] exampleUsers = {
@@ -23,32 +23,26 @@ public class Users {
         };
 
         for (User user : exampleUsers) {
-            this.users.add(user);
+            this.userMap.put(user.username, user);
         }
     }
 
     public Role getRoleByUsername(String username) {
-        for (User user : users) {
-            if (user.username.equals(username)) {
-                return user.role;
-            }
-        }
-
-        return null; // User wasn't found.
+        User user = userMap.get(username);
+        return (user != null) ? user.role : null;
     }
 
     public Role authenticateUser(String username, String password) {
-        for (User user : users) {
-            if (user.username.equals(username) && user.password.equals(password)) {
-                return user.role;
-            }
+        User user = userMap.get(username);
+        if (user != null && user.password.equals(password)) {
+            return user.role;
         }
 
-        return null; // User wasn't found.
+        return null;
     }
 
     public void print() {
-        for (User user : users) {
+        for (User user: userMap.values()) {
             System.out.println("Username: " + user.username + ", Password: " + user.password + ", Role: " + user.role);
         }
     }
