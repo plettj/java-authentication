@@ -13,8 +13,8 @@ public class Login {
 
     public String getUsername() {
         return this.username;
-    }  
-    
+    }
+
     public String getPassword() {
         return this.password;
     }
@@ -24,7 +24,7 @@ public class Login {
     }
 
     public void print() {
-        System.out.println(this.username + ", " + this.password + ", " + this.symmetricKey);
+        System.out.println(
+                "Client login data: {" + this.username + ", " + this.password + ", " + this.symmetricKey + "}");
     }
 }
- 

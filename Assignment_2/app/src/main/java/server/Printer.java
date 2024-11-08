@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+import authentication.VerificationResult;
+
 /**
  * Printer class simulates a server that manages print jobs.
  * It handles operations like adding print jobs, controlling the server, and
@@ -20,7 +22,7 @@ import java.rmi.server.UnicastRemoteObject;
 public class Printer extends UnicastRemoteObject implements PrinterInterface {
 
     private Authentication authentication;
-    
+
     FileWriter out;
     BufferedWriter writeFile;
     String serverInvocationFileName = "src/logs/server_invocation_records.txt";
@@ -31,6 +33,28 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
         this.authentication.print();
     }
 
+    // Authentication methods //
+    public String getPublicKey() throws RemoteException {
+        recordServerInvocation("getPublicKey", new String[] {});
+
+        return this.authentication.getPublicKey().toString();
+    }
+
+    public VerificationResult login(String encryptedLoginRequest) throws RemoteException {
+        recordServerInvocation("login", new String[] { encryptedLoginRequest });
+
+        try {
+            String loginRequest = this.authentication.decryptWithPrivateKey(encryptedLoginRequest);
+
+            System.out.println("Decrypted login request: " + loginRequest);
+        } catch (Exception e) {
+            return new VerificationResult(false, "Login failed: Error decrypting login request.");
+        }
+
+        return new VerificationResult(true, "Login successful.");
+    }
+
+    // Printer methods //
     private void recordServerInvocation(String function, String[] parameters) throws RemoteException {
         File file = new File(serverInvocationFileName);
         String invocation = "Invocation called: " + function + "(";
@@ -66,104 +90,40 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
         }
     }
 
-    /**
-     * Prints the specified file on the designated printer.
-     *
-     * @param filename The name of the file to print.
-     * @param printer  The name of the printer to print to.
-     */
     public void print(String filename, String printer) throws RemoteException {
         recordServerInvocation("print", new String[] { filename, printer });
     }
 
-    /**
-     * Lists the print queue for the specified printer on the user’s display.
-     *
-     * @param printer The name of the printer whose queue is to be displayed.
-     * @return A list of print jobs in the format of "job number - file name".
-     */
     public void queue(String printer) throws RemoteException {
         recordServerInvocation("queue", new String[] { printer });
     }
 
-    /**
-     * Moves the specified job to the top of the print queue for the given printer.
-     *
-     * @param printer The name of the printer whose queue will be reordered.
-     * @param job     The job number to move to the top of the queue.
-     */
     public void topQueue(String printer, int job) throws RemoteException {
         recordServerInvocation("topQueue", new String[] { printer, String.valueOf(job) });
     }
 
-    /**
-     * Starts the print server.
-     */
     public void start() throws RemoteException {
         recordServerInvocation("start", new String[] {});
     }
 
-    /**
-     * Stops the print server.
-     */
     public void stop() throws RemoteException {
         recordServerInvocation("stop", new String[] {});
     }
 
-    /**
-     * Restarts the print server, clears the print queue, and starts the server
-     * again.
-     */
     public void restart() throws RemoteException {
         recordServerInvocation("restart", new String[] {});
     }
 
-    /**
-     * Displays the status of the specified printer to the user.
-     *
-     * @param printer The name of the printer whose status is to be displayed.
-     * @return The status of the printer.
-     */
     public void status(String printer) throws RemoteException {
         recordServerInvocation("status", new String[] { printer });
     }
 
-    /**
-     * Reads the value of the specified configuration parameter on the print server.
-     *
-     * @param parameter The name of the configuration parameter.
-     * @return The value of the specified parameter.
-     */
     public void readConfig(String parameter) throws RemoteException {
         recordServerInvocation("readConfig", new String[] { parameter });
     }
 
-    /**
-     * Sets the specified configuration parameter to the given value on the print
-     * server.
-     *
-     * @param parameter The name of the configuration parameter.
-     * @param value     The value to set for the configuration parameter.
-     */
     public void setConfig(String parameter, String value) throws RemoteException {
         recordServerInvocation("setConfig", new String[] { parameter, value });
-    }
-
-    /**
-     * TEMPORARY MAIN FUNCTION for testing if our Printer runs
-     * 
-     * @param args
-     */
-    public static void main(String[] args) {
-        try {
-            Printer server = new Printer();
-            // TODO: Make constants for relative `tests` and `printers` locations.
-            server.print("Assignment_2/tests/test_1.txt", "Assignment_2/printers/printer4.txt");
-        } catch (RemoteException e) {
-            System.out.println("RemoteException: " + e.getMessage());
-        }
-
-        System.out.println("This code is running...");
     }
 
     public enum Role {
