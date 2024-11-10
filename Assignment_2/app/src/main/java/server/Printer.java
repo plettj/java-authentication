@@ -69,7 +69,7 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
             String roleSessionToken = this.authentication.authenticate(encryptedLoginRequest);
             int i = roleSessionToken.indexOf(" ");
             String role = roleSessionToken.substring(0, i);
-            boolean validRole = role != "INVALID";
+            boolean validRole = !role.equals("INVALID");
             String sessionToken = roleSessionToken.substring(i + 1);
             VerificationResult result = new VerificationResult(validRole, validRole ? "Login successful." : "Login failed", sessionToken);
             // String loginRequest = this.authentication.decryptWithPrivateKey(encryptedLoginRequest);

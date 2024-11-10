@@ -81,7 +81,7 @@ public class Authentication {
                 sessionToken = password;
             } else {
                 role = null;
-                sessionToken = "-";
+                sessionToken = "INVALIDSESSION";
             }  
         }
         String r = role != null ? role.toString() : "INVALID";
