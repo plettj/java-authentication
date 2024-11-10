@@ -1,32 +1,35 @@
 package server;
 
 import authentication.VerificationResult;
+import server.Printer.Role;
 
+import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.crypto.Cipher;
 
 public class Authentication {
 
     private Users users;
-
-    private Map<String, String> sessionStore; // Stores client sessions
+    private Sessions sessions;
 
     private static final String ALGORITHM = "RSA";
     private KeyPair keyPair = null;
 
     public Authentication() {
         this.users = new Users();
-        this.sessionStore = new HashMap<>();
+        this.sessions = new Sessions();
 
         // RESOURCE: Public<>private key encryption in Java
         // https://stackoverflow.com/a/39615507/8360465
@@ -35,7 +38,7 @@ public class Authentication {
         try {
             KeyPairGenerator keyGen = KeyPairGenerator.getInstance(ALGORITHM);
             SecureRandom random = SecureRandom.getInstance("SHA1PRNG", "SUN");
-            keyGen.initialize(512, random);
+            keyGen.initialize(2048, random);
 
             this.keyPair = keyGen.generateKeyPair();
         } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
@@ -43,29 +46,9 @@ public class Authentication {
         }
     }
 
-    public VerificationResult verifyPassword(String clientId, String password) {
-        // String storedPassword = passwordStore.get(clientId);
-        // if (storedPassword != null && storedPassword.equals(password)) {
-        // String sessionId = UUID.randomUUID().toString();
-        // sessionStore.put(clientId, sessionId);
-        // return new VerificationResult(true, sessionId);
-        // } else {
-        return new VerificationResult(false, "Invalid password");
-        // }
-    }
-
-    public boolean validateSession(String clientId, String sessionId) {
-        return sessionId.equals(sessionStore.get(clientId));
-    }
-
     public void print() {
         System.out.println("All Users in Server Authentication:");
         this.users.print();
-
-        System.out.println("All Sessions in Server Authentication:");
-        for (Map.Entry<String, String> entry : sessionStore.entrySet()) {
-            System.out.println(entry.getKey() + " : " + entry.getValue());
-        }
     }
 
     // TODO: Implement this function, and use it when login requests come in.
@@ -73,19 +56,51 @@ public class Authentication {
         return "pass";
     }
 
-    public String decryptWithPrivateKey(String data) throws Exception {
-        PrivateKey key = KeyFactory.getInstance(ALGORITHM)
-                .generatePrivate(new PKCS8EncodedKeySpec(this.keyPair.getPrivate().getEncoded()));
+    public String authenticate(byte[] data) throws Exception {
+        String decryptedLogin = decryptWithPrivateKey(data);
+        
+        int usernameIndex = 0;
+        int passwordIndex = decryptedLogin.indexOf(" ") + 1;
+        int symmetricKeyIndex = decryptedLogin.lastIndexOf(" ") + 1;
 
-        Cipher cipher = Cipher.getInstance(ALGORITHM);
-        cipher.init(Cipher.DECRYPT_MODE, key);
-
-        byte[] decryptedBytes = cipher.doFinal(data.getBytes());
-
-        return decryptedBytes.toString();
+        String username = decryptedLogin.substring(usernameIndex, passwordIndex - 1);
+        String password = decryptedLogin.substring(passwordIndex, symmetricKeyIndex - 1);
+        String symmetricKey = decryptedLogin.substring(symmetricKeyIndex);
+        System.out.println("Username: " + username + ", Password: " + password);
+        Role role = this.users.authenticateUser(username, password);
+        boolean correctPassword = role != null;
+        String sessionToken = UUID.randomUUID().toString();
+        System.out.println("Session token: " + sessionToken);
+        if (correctPassword) {
+            this.sessions.createSession(username, sessionToken, symmetricKey);
+        } else {
+            // Password is the sessionToken!!!
+            boolean valid = this.sessions.validateSession(username, password);
+            if (valid) {
+                this.sessions.updateTime(sessionToken);
+                role = this.users.getRoleByUsername(username);
+                sessionToken = password;
+            } else {
+                role = null;
+                sessionToken = "-";
+            }
+        }
+        String r = role != null ? role.toString() : "-";
+        return r + " " + sessionToken;
     }
 
-    public byte[] getPublicKey() {
-        return this.keyPair.getPublic().getEncoded();
+    public String decryptWithPrivateKey(byte[] data) throws Exception {
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(Cipher.DECRYPT_MODE, this.keyPair.getPrivate());
+
+        byte[] decryptedBytes = cipher.doFinal(data);
+
+        String decryptedString = new String(decryptedBytes, StandardCharsets.UTF_8);
+
+        return decryptedString;
+    }
+
+    public PublicKey getPublicKey() {
+        return this.keyPair.getPublic();
     }
 }

@@ -8,6 +8,7 @@ import java.util.Scanner;
 import javax.crypto.KeyGenerator;
 
 import authentication.Hashing;
+import authentication.Session;
 import authentication.VerificationResult;
 import server.PrinterInterface;
 
@@ -17,6 +18,9 @@ public class Printer {
     private Authentication authentication;
 
     private String symmetricKey;
+
+    private String username;
+    private String sessionToken;
 
     Printer(String clientName) {
         this.clientName = clientName;
@@ -36,16 +40,19 @@ public class Printer {
         login.print();
 
         try {
-            String encryptedLogin = this.authentication.encryptForServer(login.toString());
-
+            System.out.println("before encrypted login: " + login.toString());
+            byte[] encryptedLogin = this.authentication.encryptForServer(login.toString());
+            System.out.println("after encrypted login: " + encryptedLogin);
             System.out.println("Sending login request to server: " + encryptedLogin);
             VerificationResult result = this.serverPrinter.login(encryptedLogin);
 
             if (result.isSuccess()) {
-                System.out.println("Login SUCCESS");
+                System.out.println("Login SUCCESS - " + result.getMessage() + " - " + result.getSessionToken());
+                this.sessionToken = result.getSessionToken();
             } else {
                 System.out.println("Login FAIL");
             }
+
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
@@ -55,9 +62,15 @@ public class Printer {
         try {
             Scanner scanner = new Scanner(System.in);
             System.out.println("Enter your username: ");
-            String username = scanner.nextLine();
-            System.out.println("Enter your password: ");
-            String password = scanner.nextLine();
+            this.username = scanner.nextLine();
+
+            String passwordOrToken = this.sessionToken;
+
+            if (passwordOrToken == null) {
+                System.out.println("Enter your password: ");
+                passwordOrToken = scanner.nextLine();
+            }
+
             scanner.close();
 
             // Create our symmetric key.
@@ -68,18 +81,14 @@ public class Printer {
             // RESOURCE: Symmetric key encryption/decryption in Java.
             // https://gregorycernera.medium.com/encrypting-and-decrypting-a-message-using-symmetric-keys-with-java-explained-step-by-step-with-a523b67877d8
 
-            Hashing hash = new Hashing(password);
-            password = hash.getHash();
-            Login login = new Login(username, password, symmetricKey);
+            Hashing hash = new Hashing(passwordOrToken);
+            passwordOrToken = hash.getHash();
+            Login login = new Login(this.username, passwordOrToken, symmetricKey);
             return login;
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
             return null;
         }
-
-    }
-
-    public void authenticateWithLogin(Login login) {
 
     }
 
@@ -97,8 +106,6 @@ public class Printer {
     }
 
     public void printOnServer(String filename, String printer) throws Exception {
-        this.serverPrinter.start();
-        this.serverPrinter.print(filename, printer);
-        this.serverPrinter.stop();
+        this.serverPrinter.print(new Session(this.username, this.sessionToken), filename, printer);
     }
 }
