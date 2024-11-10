@@ -10,16 +10,9 @@ public class Users {
 
     public Users() {
         User[] exampleUsers = {
-            new User("admin", "unHASHED&^*86pa55", Role.ADMIN),
-            new User("manager_jane", "m@n@g3r_2024", Role.MANAGER),
-            new User("user_john", "johndoepass123", Role.USER),
-            new User("superadmin", "super$ecret2023", Role.ADMIN),
-            new User("manager_bob", "bob1234!secure", Role.MANAGER),
-            new User("user_mary", "m@rySecure001", Role.USER),
-            new User("admin_tech", "techAdmin#456", Role.ADMIN),
-            new User("manager_alice", "AliceM@nag3r", Role.MANAGER),
-            new User("user_charlie", "charliePass!@#", Role.USER),
-            new User("admin_root", "RootPass*99", Role.ADMIN)
+            new User("Alice", "alice123", Role.MANAGER),
+            new User("Bob", "bob123", Role.SERVICE),
+            new User("David", "david123", Role.USER),
         };
 
         for (User user : exampleUsers) {
