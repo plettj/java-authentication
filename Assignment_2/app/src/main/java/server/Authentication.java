@@ -66,7 +66,6 @@ public class Authentication {
         String username = decryptedLogin.substring(usernameIndex, passwordIndex - 1);
         String password = decryptedLogin.substring(passwordIndex, symmetricKeyIndex - 1);
         String symmetricKey = decryptedLogin.substring(symmetricKeyIndex);
-        System.out.println("Username: " + username + ", Password: " + password);
         Role role = this.users.authenticateUser(username, password);
         boolean correctPassword = role != null;
         String sessionToken = UUID.randomUUID().toString();
@@ -83,9 +82,9 @@ public class Authentication {
             } else {
                 role = null;
                 sessionToken = "-";
-            }
+            }  
         }
-        String r = role != null ? role.toString() : "-";
+        String r = role != null ? role.toString() : "INVALID";
         return r + " " + sessionToken;
     }
 
@@ -102,5 +101,14 @@ public class Authentication {
 
     public PublicKey getPublicKey() {
         return this.keyPair.getPublic();
+    }
+
+    public Role getRoleByUsername(String username) {
+        return users.getRoleByUsername(username);
+    }
+    
+    public boolean validateSession(String username, String sessionToken) {
+        return this.sessions.validateSession(username, sessionToken);
+        
     }
 }

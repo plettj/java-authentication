@@ -40,10 +40,7 @@ public class Printer {
         login.print();
 
         try {
-            System.out.println("before encrypted login: " + login.toString());
             byte[] encryptedLogin = this.authentication.encryptForServer(login.toString());
-            System.out.println("after encrypted login: " + encryptedLogin);
-            System.out.println("Sending login request to server: " + encryptedLogin);
             VerificationResult result = this.serverPrinter.login(encryptedLogin);
 
             if (result.isSuccess()) {
@@ -107,5 +104,25 @@ public class Printer {
 
     public void printOnServer(String filename, String printer) throws Exception {
         this.serverPrinter.print(new Session(this.username, this.sessionToken), filename, printer);
+    }
+
+    public void actAsUser(String filename, String printer) throws Exception {
+        Session session = new Session(this.username, this.sessionToken);
+        this.serverPrinter.print(session, filename, printer);
+        this.serverPrinter.queue(session, printer);
+    }
+    public void actAsManager(String filename, String printer) throws Exception {
+        Session session = new Session(this.username, this.sessionToken);
+        this.serverPrinter.print(session, filename, printer);
+        this.serverPrinter.queue(session, printer);
+        this.serverPrinter.topQueue(session, printer, 0);
+        this.serverPrinter.start(session);
+    }
+
+    public void actAsService(String filename, String printer) throws Exception {
+        Session session = new Session(this.username, this.sessionToken);
+        this.serverPrinter.start(session);
+        this.serverPrinter.status(session, printer);
+        this.serverPrinter.stop(session);
     }
 }

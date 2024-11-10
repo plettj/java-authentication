@@ -10,4 +10,10 @@ public class Session implements Serializable {
         this.username = username;
         this.sessionToken = sessionToken;
     }
+    public String getUsername(){
+        return this.username;
+    }
+    public String getSessionToken(){
+        return this.sessionToken;
+    }
 }

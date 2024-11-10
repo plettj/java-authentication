@@ -17,6 +17,10 @@ import java.util.HashMap;
 import authentication.VerificationResult;
 import authentication.Session;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 /**
  * Printer class simulates a server that manages print jobs.
  * It handles operations like adding print jobs, controlling the server, and
@@ -46,29 +50,29 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
         rolePermissions.put("readConfig", new Role[] {Role.MANAGER, Role.SERVICE, });
         rolePermissions.put("setConfig", new Role[] {Role.MANAGER, Role.SERVICE, });
 
-        recordServerInvocation("----------", new String[] {"Server Instantiated"});
+        long now = Instant.now().getEpochSecond();
+        String nowString = String.valueOf(now);
+        printToLog("");
+        printToLog("----------NEW SERVER INSTANTIATED AT EPOCH " + nowString + "----------");
     }
 
     // Authentication methods //
     public PublicKey getPublicKey() throws RemoteException {
-        recordServerInvocation("getPublicKey", new String[] {});
+        recordServerInvocation("getPublicKey", new String[] {}, true);
 
         return this.authentication.getPublicKey();
     }
 
     public VerificationResult login(byte[] encryptedLoginRequest) throws RemoteException {
-        recordServerInvocation("login", new String[] { encryptedLoginRequest.toString() });
-        System.out.println("login called " + encryptedLoginRequest + " " + encryptedLoginRequest.toString());
+        recordServerInvocation("login", new String[] { encryptedLoginRequest.toString() }, true);
         try {
             String roleSessionToken = this.authentication.authenticate(encryptedLoginRequest);
             int i = roleSessionToken.indexOf(" ");
             String role = roleSessionToken.substring(0, i);
+            boolean validRole = role != "INVALID";
             String sessionToken = roleSessionToken.substring(i + 1);
-            VerificationResult result = new VerificationResult(role != "-", role != "-" ? "Login successful." : "Login failed", sessionToken);
+            VerificationResult result = new VerificationResult(validRole, validRole ? "Login successful." : "Login failed", sessionToken);
             // String loginRequest = this.authentication.decryptWithPrivateKey(encryptedLoginRequest);
-
-            System.out.println("Login request result: " + role);
-            System.out.println("result: " + result.isSuccess());
             return result;
         } catch (Exception e) {
             return new VerificationResult(false, "Login failed: Error decrypting login request.", null);
@@ -77,27 +81,42 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
 
     public boolean validateRequest(Session session, String function) {
         // Find if session is active
-
+        String username = session.getUsername();
+        String sessionToken = session.getSessionToken();
+        boolean valid = this.authentication.validateSession(username, sessionToken);
         // Get the role
-
+        Role role = this.authentication.getRoleByUsername(username);
         // Check the role against the function name
-
+        Role[] allowedRoles = this.rolePermissions.get(function);
+        for (Role allowedRole : allowedRoles) {
+            if (role == allowedRole) {
+                return valid;
+            }
+        }
         return false;
     }
 
     // Printer methods //
-    private void recordServerInvocation(String function, String[] parameters) throws RemoteException {
-        File file = new File(serverInvocationFileName);
-        String invocation = "Invocation called: " + function + "(";
-        int i = 0;
-        while (i < parameters.length) {
-            invocation = invocation.concat(parameters[i]);
-            if (i < parameters.length - 1) {
-                invocation = invocation.concat(", ");
+    private void recordServerInvocation(String function, String[] parameters, boolean valid) throws RemoteException {
+        if (valid) {
+            String invocation = "Invocation called: " + function + "(";
+            int i = 0;
+            while (i < parameters.length) {
+                invocation = invocation.concat(parameters[i]);
+                if (i < parameters.length - 1) {
+                    invocation = invocation.concat(", ");
+                }
+                i = i + 1;
             }
-            i = i + 1;
+            invocation = invocation.concat(")");
+            printToLog(invocation);
+        } else {
+            printToLog("ERROR: " + function + " called with invalid permission.");
         }
-        invocation = invocation.concat(")");
+    }
+
+    private void printToLog(String message) {
+        File file = new File(serverInvocationFileName);
         try {
             File parentDir = file.getParentFile();
             if (parentDir != null && !parentDir.exists()) {
@@ -110,7 +129,7 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
             out = new FileWriter(file, true);
             writeFile = new BufferedWriter(out);
 
-            writeFile.write(invocation);
+            writeFile.write(message);
             writeFile.newLine();
 
             writeFile.close();
@@ -124,56 +143,56 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
     public void print(Session session, String filename, String printer) throws RemoteException {
         String function = "print";
         boolean allowed = this.validateRequest(session, function);
-        recordServerInvocation(allowed ? function : function + "-INVALID", new String[] { filename, printer });    
+        recordServerInvocation(function, new String[] { filename, printer }, allowed);    
         
     }
 
     public void queue(Session session, String printer) throws RemoteException {
         String function = "queue";
         boolean allowed = this.validateRequest(session, function);
-        recordServerInvocation(allowed ? function : function + "-INVALID", new String[] { printer });
+        recordServerInvocation(function, new String[] { printer }, allowed); 
     }
 
     public void topQueue(Session session, String printer, int job) throws RemoteException {
         String function = "topQueue";
         boolean allowed = this.validateRequest(session, function);
-        recordServerInvocation(allowed ? function : function + "-INVALID", new String[] { printer, String.valueOf(job) });
+        recordServerInvocation(function, new String[] { printer, String.valueOf(job) }, allowed); 
     }
 
     public void start(Session session) throws RemoteException {
         String function = "start";
         boolean allowed = this.validateRequest(session, function);
-        recordServerInvocation(allowed ? function : function + "-INVALID", new String[] {});
+        recordServerInvocation(function, new String[] {}, allowed); 
     }
 
     public void stop(Session session) throws RemoteException {
         String function = "stop";
         boolean allowed = this.validateRequest(session, function);
-        recordServerInvocation(allowed ? function : function + "-INVALID", new String[] {});
+        recordServerInvocation(function, new String[] {}, allowed); 
     }
 
     public void restart(Session session) throws RemoteException {
         String function = "restart";
         boolean allowed = this.validateRequest(session, function);
-        recordServerInvocation(allowed ? function : function + "-INVALID", new String[] {});
+        recordServerInvocation(function, new String[] {}, allowed); 
     }
 
     public void status(Session session, String printer) throws RemoteException {
         String function = "status";
         boolean allowed = this.validateRequest(session, function);
-        recordServerInvocation(allowed ? function : function + "-INVALID", new String[] { printer });
+        recordServerInvocation(function, new String[] { printer }, allowed); 
     }
 
     public void readConfig(Session session, String parameter) throws RemoteException {
         String function = "readConfig";
         boolean allowed = this.validateRequest(session, function);
-        recordServerInvocation(allowed ? function : function + "-INVALID", new String[] { parameter });
+        recordServerInvocation(function, new String[] { parameter }, allowed); 
     }
 
     public void setConfig(Session session, String parameter, String value) throws RemoteException {
         String function = "setConfig";
         boolean allowed = this.validateRequest(session, function);
-        recordServerInvocation(allowed ? function : function + "-INVALID", new String[] { parameter, value });
+        recordServerInvocation(function, new String[] { parameter, value }, allowed); 
     }
 
     public enum Role {

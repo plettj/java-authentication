@@ -25,7 +25,7 @@ public class Sessions {
 
         public void updateTime() {
             this.expirationEpoch = Instant.now().getEpochSecond() + 60;
-        }
+        }   
     }
 
     public void updateTime(String sessionToken) {
@@ -47,7 +47,7 @@ public class Sessions {
     }
 
     public boolean validateSession(String username, String sessionToken) {
-        System.out.print("Validating session... {" + username + ", " + sessionToken + "}");
+        System.out.println("Validating session... {" + username + ", " + sessionToken + "}");
         if (this.sessions.get("ID-" + sessionToken) == null) {
             return false;
         }
