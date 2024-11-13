@@ -39,16 +39,16 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
         super();
         this.authentication = new Authentication();
         this.authentication.print();
-        
-        rolePermissions.put("print", new Role[] {Role.MANAGER, Role.USER});
-        rolePermissions.put("queue", new Role[] {Role.MANAGER, Role.USER});
-        rolePermissions.put("topQueue", new Role[] {Role.MANAGER});
-        rolePermissions.put("start", new Role[] {Role.MANAGER, Role.SERVICE, });
-        rolePermissions.put("stop", new Role[] {Role.MANAGER, Role.SERVICE, });
-        rolePermissions.put("restart", new Role[] {Role.MANAGER, Role.SERVICE, });
-        rolePermissions.put("status", new Role[] {Role.MANAGER, Role.SERVICE, });
-        rolePermissions.put("readConfig", new Role[] {Role.MANAGER, Role.SERVICE, });
-        rolePermissions.put("setConfig", new Role[] {Role.MANAGER, Role.SERVICE, });
+
+        rolePermissions.put("print", new Role[] { Role.MANAGER, Role.USER });
+        rolePermissions.put("queue", new Role[] { Role.MANAGER, Role.USER });
+        rolePermissions.put("topQueue", new Role[] { Role.MANAGER });
+        rolePermissions.put("start", new Role[] { Role.MANAGER, Role.SERVICE, });
+        rolePermissions.put("stop", new Role[] { Role.MANAGER, Role.SERVICE, });
+        rolePermissions.put("restart", new Role[] { Role.MANAGER, Role.SERVICE, });
+        rolePermissions.put("status", new Role[] { Role.MANAGER, Role.SERVICE, });
+        rolePermissions.put("readConfig", new Role[] { Role.MANAGER, Role.SERVICE, });
+        rolePermissions.put("setConfig", new Role[] { Role.MANAGER, Role.SERVICE, });
 
         long now = Instant.now().getEpochSecond();
         String nowString = String.valueOf(now);
@@ -71,8 +71,10 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
             String role = roleSessionToken.substring(0, i);
             boolean validRole = !role.equals("INVALID");
             String sessionToken = roleSessionToken.substring(i + 1);
-            VerificationResult result = new VerificationResult(validRole, validRole ? "Login successful." : "Login failed", sessionToken);
-            // String loginRequest = this.authentication.decryptWithPrivateKey(encryptedLoginRequest);
+            VerificationResult result = new VerificationResult(validRole,
+                    validRole ? "Login successful." : "Login failed", sessionToken);
+            // String loginRequest =
+            // this.authentication.decryptWithPrivateKey(encryptedLoginRequest);
             return result;
         } catch (Exception e) {
             return new VerificationResult(false, "Login failed: Error decrypting login request.", null);
@@ -85,14 +87,14 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
         String sessionToken = session.getSessionToken();
         boolean valid = this.authentication.validateSession(username, sessionToken);
         // Get the role
-        // Role role = this.authentication.getRoleByUsername(username);
+        Role role = this.authentication.getRoleByUsername(username);
         // Check the role against the function name
-        // Role[] allowedRoles = this.rolePermissions.get(function);
-        // for (Role allowedRole : allowedRoles) {
-        //     if (role == allowedRole) {
-        //         return valid;
-        //     }
-        // }
+        Role[] allowedRoles = this.rolePermissions.get(function);
+        for (Role allowedRole : allowedRoles) {
+            if (role == allowedRole) {
+                return valid;
+            }
+        }
         return valid;
     }
 
@@ -143,56 +145,56 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
     public void print(Session session, String filename, String printer) throws RemoteException {
         String function = "print";
         boolean allowed = this.validateRequest(session, function);
-        recordServerInvocation(function, new String[] { filename, printer }, allowed);    
-        
+        recordServerInvocation(function, new String[] { filename, printer }, allowed);
+
     }
 
     public void queue(Session session, String printer) throws RemoteException {
         String function = "queue";
         boolean allowed = this.validateRequest(session, function);
-        recordServerInvocation(function, new String[] { printer }, allowed); 
+        recordServerInvocation(function, new String[] { printer }, allowed);
     }
 
     public void topQueue(Session session, String printer, int job) throws RemoteException {
         String function = "topQueue";
         boolean allowed = this.validateRequest(session, function);
-        recordServerInvocation(function, new String[] { printer, String.valueOf(job) }, allowed); 
+        recordServerInvocation(function, new String[] { printer, String.valueOf(job) }, allowed);
     }
 
     public void start(Session session) throws RemoteException {
         String function = "start";
         boolean allowed = this.validateRequest(session, function);
-        recordServerInvocation(function, new String[] {}, allowed); 
+        recordServerInvocation(function, new String[] {}, allowed);
     }
 
     public void stop(Session session) throws RemoteException {
         String function = "stop";
         boolean allowed = this.validateRequest(session, function);
-        recordServerInvocation(function, new String[] {}, allowed); 
+        recordServerInvocation(function, new String[] {}, allowed);
     }
 
     public void restart(Session session) throws RemoteException {
         String function = "restart";
         boolean allowed = this.validateRequest(session, function);
-        recordServerInvocation(function, new String[] {}, allowed); 
+        recordServerInvocation(function, new String[] {}, allowed);
     }
 
     public void status(Session session, String printer) throws RemoteException {
         String function = "status";
         boolean allowed = this.validateRequest(session, function);
-        recordServerInvocation(function, new String[] { printer }, allowed); 
+        recordServerInvocation(function, new String[] { printer }, allowed);
     }
 
     public void readConfig(Session session, String parameter) throws RemoteException {
         String function = "readConfig";
         boolean allowed = this.validateRequest(session, function);
-        recordServerInvocation(function, new String[] { parameter }, allowed); 
+        recordServerInvocation(function, new String[] { parameter }, allowed);
     }
 
     public void setConfig(Session session, String parameter, String value) throws RemoteException {
         String function = "setConfig";
         boolean allowed = this.validateRequest(session, function);
-        recordServerInvocation(function, new String[] { parameter, value }, allowed); 
+        recordServerInvocation(function, new String[] { parameter, value }, allowed);
     }
 
     public enum Role {

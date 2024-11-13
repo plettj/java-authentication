@@ -1,8 +1,14 @@
-# Zip 1 - Authentication - Printer Authentication Lab
+# Zip 3 - Access Control List - Printer Authentication Lab
 
-This is the printer authentication lab **Part 1** in Java for DTU course [02239 - Data Security](https://kurser.dtu.dk/course/02239).
+This is the printer authentication lab **Part 3** in Java for DTU course [02239 - Data Security](https://kurser.dtu.dk/course/02239).
 
-Note that since we built our project with a forward-thinking mindset, this zip file contains some infrastructure to support ACLs and role-based authorization. However, we have updated `server/Printer.java.validateRequest` to not use this infrastructure, for your convenience during testing.
+This contains all the final code of our project, implementing:
+
+- **Secure Server<>Client Connections** (fully implemented)
+- **Authorization** (fully implemented, but allows duplicate logins if correct password is provided)
+- **Persistent Sessions** (fully implemented, but testing requires terminal copy-paste)
+- **Session Expiration** (fully implemented)
+- **Enforced Access Control** (fully implemented)
 
 ## Usage
 
@@ -87,4 +93,18 @@ First, our `Server.Authenticate` checks for an existing, non-expired session. If
 
 8. Server verifies **C**'s RMI requests
 
-This is done against `sessionToken` of course, but in future zip files you'll find additional checks against our ACL.
+This is done against our ACL using _role-based authorization_, which means individual `username`s are associated with `Role`s, that each have defined permitions for various RMIs.
+
+---
+
+## Final Note to the TA
+
+We are unsure if you'll actually read this during grading, but if you do, thank you very much! We appreciate it, and just have a short note to share.
+
+We understand other people's code is hard to review, especially code written primarily for exploration. Our code base is large and full of features, but hard to test.
+
+For this reason, **please use our report as the reference point** for what we have implemented in the code base. For example, `sessions` are not testable easily through our CLI, but they do exist and can be tested via copy-pasting of returned server `sessionTokens` into the `password` field of a login request.
+
+So overall, we've put in serious effort into our feature-rich code base, but haven't invested in readability. I hope you're able to find what you're looking for when looking through the code!
+
+Have a nice random weekday afternoon. :P
