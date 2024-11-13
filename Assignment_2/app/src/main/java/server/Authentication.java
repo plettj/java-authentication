@@ -49,7 +49,6 @@ public class Authentication {
     public void print() {
         System.out.println("All Users in Server Authentication:");
         this.users.print();
-        System.out.println("NOTE: 'Role' is not used in this zip file; see the later ones if you're interested.");
     }
 
     // TODO: Implement this function, and use it when login requests come in.
