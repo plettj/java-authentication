@@ -49,6 +49,8 @@ public class Authentication {
     public void print() {
         System.out.println("All Users in Server Authentication:");
         this.users.print();
+        System.out.println(
+                "NOTE: 'Role' is not used in this zip file, instead the `userPermissions` attribute in `server/Printer.java` stores the ACL. See the last zip (zip-3-role-based-authorization) if you're interested in true role-based authorization.");
     }
 
     // TODO: Implement this function, and use it when login requests come in.
@@ -58,7 +60,7 @@ public class Authentication {
 
     public String authenticate(byte[] data) throws Exception {
         String decryptedLogin = decryptWithPrivateKey(data);
-        
+
         int usernameIndex = 0;
         int passwordIndex = decryptedLogin.indexOf(" ") + 1;
         int symmetricKeyIndex = decryptedLogin.lastIndexOf(" ") + 1;
@@ -82,7 +84,7 @@ public class Authentication {
             } else {
                 role = null;
                 sessionToken = "INVALIDSESSION";
-            }  
+            }
         }
         String r = role != null ? role.toString() : "INVALID";
         return r + " " + sessionToken;
@@ -106,9 +108,9 @@ public class Authentication {
     public Role getRoleByUsername(String username) {
         return users.getRoleByUsername(username);
     }
-    
+
     public boolean validateSession(String username, String sessionToken) {
         return this.sessions.validateSession(username, sessionToken);
-        
+
     }
 }

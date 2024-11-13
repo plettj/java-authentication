@@ -14,9 +14,7 @@ public class PrinterMain {
             // Begin login and printer action process.
             localPrinter.start();
 
-            // OLD: Testing RMI printOnServer method.
-            // localPrinter.printOnServer("Assignment_2/app/src/test/resources/test_1.txt",
-            //         "Assignment_2/app/src/test/resources/printers/printer_1.txt");
+            // To TAs: Update this to modify what the client calls once logging in.
             localPrinter.actAsManager("Assignment_2/app/src/test/resources/test_1.txt",
                     "Assignment_2/app/src/test/resources/printers/printer_1.txt");
         } catch (Exception e) {
