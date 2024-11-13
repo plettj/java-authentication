@@ -85,15 +85,15 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
         String sessionToken = session.getSessionToken();
         boolean valid = this.authentication.validateSession(username, sessionToken);
         // Get the role
-        Role role = this.authentication.getRoleByUsername(username);
+        // Role role = this.authentication.getRoleByUsername(username);
         // Check the role against the function name
-        Role[] allowedRoles = this.rolePermissions.get(function);
-        for (Role allowedRole : allowedRoles) {
-            if (role == allowedRole) {
-                return valid;
-            }
-        }
-        return false;
+        // Role[] allowedRoles = this.rolePermissions.get(function);
+        // for (Role allowedRole : allowedRoles) {
+        //     if (role == allowedRole) {
+        //         return valid;
+        //     }
+        // }
+        return valid;
     }
 
     // Printer methods //
