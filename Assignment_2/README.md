@@ -28,7 +28,7 @@ gradle runClient
 
 It is currently not possible to input requested RMIs from the client upon login; instead, the client terminal simply terminates.
 
-However, the infrastructure is there, so please change
+However, the infrastructure is there, so please update `client/PrinterMain.java` to call the `localPrinter.actAs[blank]` methods, and modify those methods if you're trying to test something specific.
 
 ## Code Structure
 
