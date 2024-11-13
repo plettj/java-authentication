@@ -33,22 +33,22 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
     FileWriter out;
     BufferedWriter writeFile;
     String serverInvocationFileName = "src/logs/server_invocation_records.txt";
-    HashMap<String, Role[]> rolePermissions = new HashMap<String, Role[]>();
+    HashMap<String, String[]> userPermissions = new HashMap<String, String[]>();
 
     public Printer() throws RemoteException {
         super();
         this.authentication = new Authentication();
         this.authentication.print();
         
-        rolePermissions.put("print", new Role[] {Role.MANAGER, Role.USER});
-        rolePermissions.put("queue", new Role[] {Role.MANAGER, Role.USER});
-        rolePermissions.put("topQueue", new Role[] {Role.MANAGER});
-        rolePermissions.put("start", new Role[] {Role.MANAGER, Role.SERVICE, });
-        rolePermissions.put("stop", new Role[] {Role.MANAGER, Role.SERVICE, });
-        rolePermissions.put("restart", new Role[] {Role.MANAGER, Role.SERVICE, });
-        rolePermissions.put("status", new Role[] {Role.MANAGER, Role.SERVICE, });
-        rolePermissions.put("readConfig", new Role[] {Role.MANAGER, Role.SERVICE, });
-        rolePermissions.put("setConfig", new Role[] {Role.MANAGER, Role.SERVICE, });
+        userPermissions.put("print", new String[] {"Alice", "David", "Bob"});
+        userPermissions.put("queue", new String[] {"Alice", "David", "Bob"});
+        userPermissions.put("topQueue", new String[] {"Alice"});
+        userPermissions.put("start", new String[] {"Alice", "David" });
+        userPermissions.put("stop", new String[] {"Alice", "David" });
+        userPermissions.put("restart", new String[] {"Alice", "David" });
+        userPermissions.put("status", new String[] {"Alice", "David" });
+        userPermissions.put("readConfig", new String[] {"Alice", "David" });
+        userPermissions.put("setConfig", new String[] {"Alice", "David" });
 
         long now = Instant.now().getEpochSecond();
         String nowString = String.valueOf(now);
@@ -85,11 +85,11 @@ public class Printer extends UnicastRemoteObject implements PrinterInterface {
         String sessionToken = session.getSessionToken();
         boolean valid = this.authentication.validateSession(username, sessionToken);
         // Get the role
-        Role role = this.authentication.getRoleByUsername(username);
+        // Role role = this.authentication.getRoleByUsername(username);
         // Check the role against the function name
-        Role[] allowedRoles = this.rolePermissions.get(function);
-        for (Role allowedRole : allowedRoles) {
-            if (role == allowedRole) {
+        String[] allowedUsers = this.userPermissions.get(function);
+        for (String allowedUser : allowedUsers) {
+            if (allowedUser.equals(username)) {
                 return valid;
             }
         }
