@@ -11,7 +11,7 @@ Thus, the testable functionality of this zip file is identical to Zip 3 - Role-b
 All commands should be from the root of this (extracted) zip file.
 
 ```bash
-cd zip-1-authentication
+cd zip-2-access-control-list
 ```
 
 1. Run the print server instance:
