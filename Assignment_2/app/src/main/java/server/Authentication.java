@@ -58,7 +58,7 @@ public class Authentication {
 
     public String authenticate(byte[] data) throws Exception {
         String decryptedLogin = decryptWithPrivateKey(data);
-        
+
         int usernameIndex = 0;
         int passwordIndex = decryptedLogin.indexOf(" ") + 1;
         int symmetricKeyIndex = decryptedLogin.lastIndexOf(" ") + 1;
@@ -82,7 +82,7 @@ public class Authentication {
             } else {
                 role = null;
                 sessionToken = "INVALIDSESSION";
-            }  
+            }
         }
         String r = role != null ? role.toString() : "INVALID";
         return r + " " + sessionToken;
@@ -106,9 +106,9 @@ public class Authentication {
     public Role getRoleByUsername(String username) {
         return users.getRoleByUsername(username);
     }
-    
+
     public boolean validateSession(String username, String sessionToken) {
         return this.sessions.validateSession(username, sessionToken);
-        
+
     }
 }
