@@ -1,6 +1,6 @@
-# Zip 3 - Access Control List - Printer Authentication Lab
+# Full Code - Printer Authentication Lab
 
-This is the printer authentication lab **Part 3** in Java for DTU course [02239 - Data Security](https://kurser.dtu.dk/course/02239).
+This is the printer authentication lab in Java for DTU course [02239 - Data Security](https://kurser.dtu.dk/course/02239).
 
 This contains all the final code of our project, implementing:
 
@@ -15,7 +15,7 @@ This contains all the final code of our project, implementing:
 All commands should be from the root of this (extracted) zip file.
 
 ```bash
-cd zip-1-authentication
+cd Assignment_2
 ```
 
 1. Run the print server instance:
