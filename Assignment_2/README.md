@@ -1,10 +1,14 @@
-# Zip 2 - Access Control List - Printer Authentication Lab
+# Zip 3 - Access Control List - Printer Authentication Lab
 
-This is the printer authentication lab **Part 2** in Java for DTU course [02239 - Data Security](https://kurser.dtu.dk/course/02239).
+This is the printer authentication lab **Part 3** in Java for DTU course [02239 - Data Security](https://kurser.dtu.dk/course/02239).
 
-Note that since we built our project with a forward-thinking mindset, this zip file contains some infrastructure to support role-based authorization. However, we have updated `server/Printer.java.Printer` and `server/Printer.java.validateRequest` to use a user-based authorization system rather than a role-based authorization system.
+This contains all the final code of our project, implementing:
 
-Thus, the testable functionality of this zip file is identical to Zip 3 - Role-based Authorization, but it is conceptually different due to not relying on roles.
+- **Secure Server<>Client Connections** (fully implemented)
+- **Authorization** (fully implemented, but allows duplicate logins if correct password is provided)
+- **Persistent Sessions** (fully implemented, but testing requires terminal copy-paste)
+- **Session Expiration** (fully implemented)
+- **Enforced Access Control** (fully implemented)
 
 ## Usage
 
