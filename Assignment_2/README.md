@@ -15,7 +15,7 @@ This contains all the final code of our project, implementing:
 All commands should be from the root of this (extracted) zip file.
 
 ```bash
-cd zip-1-authentication
+cd zip-3-role-based-authorization
 ```
 
 1. Run the print server instance:
