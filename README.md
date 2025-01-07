@@ -2,7 +2,15 @@
 
 This repository is a repo for holding my [02239 - Data Security](https://kurser.dtu.dk/course/02239) course materials at DTU.
 
-## OFMC Syntax
+It hosts:
+
+- Securely encrypted authentication and authorization protocols written from scratch in `Java`.
+- RBAC support for the client<>server-based login system.
+- Secure protocols for various internet scenarios, designed by my peers and I. Written in [`OFMC`](https://people.inf.ethz.ch/basin/pubs/ijis04.pdf).
+
+<details><summary>OFMC Syntax Reference</summary>
+
+<br>
 
 `A` - Variable (starts uppercase)
 `s` - Constant (starts lowercase)
@@ -17,6 +25,14 @@ This repository is a repo for holding my [02239 - Data Security](https://kurser.
 `h(M)` - Cryptographic hash of message `M` (`h()` is a manually defined function)
 `M1,M2,M3` - Concatenation
 `A->B:` - `A` is sending a message to `B`; note they are variables so they could be intruders
+
+</details>
+
+<details><summary>High-level Definitions</summary>
+
+<br>
+
+> These definitions use `OFMC` syntax for ease of interpretation and translation.
 
 #### Assymetric Encryption
 
@@ -35,3 +51,5 @@ Signing is encrypting with private keys. `{M}inv(pk(A))` is `M` signed by `A`'s 
 A nonce (number-once) is denoted by `NK` conventionally for `K` variable, and it's for ensuring duplicate messages are caught, oftentimes preventing replay attacks. It's a random number only used once.
 
 A hash is denoted by `h(M)`, a manually defined function.
+
+</details>
