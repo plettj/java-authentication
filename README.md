@@ -1,14 +1,16 @@
 # Data Security
 
+This repository hosts:
+
+- Securely encrypted authentication and authorization protocols written from scratch in `Java`. - `Assignment_2`
+- RBAC support for the client<>server-based login system. - `Assignment_2`
+- Secure protocols for various internet scenarios, designed by my peers and I. Written in [`OFMC`](https://people.inf.ethz.ch/basin/pubs/ijis04.pdf). - `Assignment_1`
+
 This repository is a repo for holding my [02239 - Data Security](https://kurser.dtu.dk/course/02239) course materials at DTU.
 
-It hosts:
+---
 
-- Securely encrypted authentication and authorization protocols written from scratch in `Java`.
-- RBAC support for the client<>server-based login system.
-- Secure protocols for various internet scenarios, designed by my peers and I. Written in [`OFMC`](https://people.inf.ethz.ch/basin/pubs/ijis04.pdf).
-
-<details><summary>OFMC Syntax Reference</summary>
+<details><summary>[OFMC](https://people.inf.ethz.ch/basin/pubs/ijis04.pdf) Syntax Reference</summary>
 
 <br>
 
@@ -32,7 +34,7 @@ It hosts:
 
 <br>
 
-> These definitions use `OFMC` syntax for ease of interpretation and translation.
+> These definitions use [`OFMC`](https://people.inf.ethz.ch/basin/pubs/ijis04.pdf) syntax for ease of interpretation and translation.
 
 #### Assymetric Encryption
 
