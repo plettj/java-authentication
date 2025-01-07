@@ -2,15 +2,16 @@
 
 This repository hosts:
 
-- Securely encrypted authentication and authorization protocols written from scratch in `Java`. - `Assignment_2`
-- RBAC support for the client<>server-based login system. - `Assignment_2`
+- Securely encrypted **authentication** and **authorization** protocols written from scratch in `Java`. - `Assignment_2`
+- **RBAC** support for the client<>server-based login system. - `Assignment_2`
+- Token-based **session management** and secure **password-based** login.
 - Secure protocols for various internet scenarios, designed by my peers and I. Written in [`OFMC`](https://people.inf.ethz.ch/basin/pubs/ijis04.pdf). - `Assignment_1`
 
 This repository is a repo for holding my [02239 - Data Security](https://kurser.dtu.dk/course/02239) course materials at DTU.
 
 ---
 
-<details><summary>[OFMC](https://people.inf.ethz.ch/basin/pubs/ijis04.pdf) Syntax Reference</summary>
+<details><summary><b>OFMC Syntax Reference</b></summary>
 
 <br>
 
@@ -30,7 +31,7 @@ This repository is a repo for holding my [02239 - Data Security](https://kurser.
 
 </details>
 
-<details><summary>High-level Definitions</summary>
+<details><summary><b>High-level Definitions</b></summary>
 
 <br>
 
